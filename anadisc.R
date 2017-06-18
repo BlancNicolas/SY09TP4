@@ -38,12 +38,12 @@ adl.app <- function(Xapp, zapp)
 		indk <- which(zapp==k)
 
 		MCov <- MCov + length(indk)*cov(Xapp[indk,]);
-		param$mean[k,] <- (1/length(indk))*sum(Xapp[indk,]);
+		param$mean[k,] <- apply(Xapp[indk,], 2, mean);
 		param$prop[k] <- length(indk)/n;
 	}
 	for (k in 1:g)
 	{
-		param$MCov[,,k] <- MCov/n;
+		param$MCov[,,k] <- MCov/(n-g);#estimateur sans biais
 	}
 
 	param
@@ -65,7 +65,7 @@ nba.app <- function(Xapp, zapp)
 		indk <- which(zapp==k)
 
 		param$mean[k,] <- (1/length(indk))*colSums(Xapp[indk,]); #meme que le quadratique 
-		param$MCov[,,k] <- diag(cov(Xapp[indk,]))*diag(ncol(Xapp)); #on part des matrices quadratiques et on les diagonalisent --> Hypothèses des d'indépendancer des variables conditionnellement à Z
+		param$MCov[,,k] <- diag(cov(Xapp[indk,]))*diag(ncol(Xapp)); #on part des matrices quadratiques et on les diagonalisent --> Hypoth?ses des d'ind?pendancer des variables conditionnellement ? Z
 		param$prop[k] <- length(indk)/n; 
 	}
 
