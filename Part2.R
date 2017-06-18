@@ -98,7 +98,7 @@ BreastErrorDiscQuad <- ErrorDisc(adl.app, ad.val, donnBreast)
 #Quadratic Logistic Regression Analysis 
 #--------------------------
 
-BreastErrorQuadReg <- synthErrorQuadReg(log.app,log.val, donnBreast)
+BreastErrorQuadReg <- ErrorQuadReg(log.app,log.val, donnBreast)
 
 #Linear Logistic Regression Analysis 
 #--------------------------

@@ -12,6 +12,12 @@ ErrorDisc <- function(appfunct, valfunct, dataset){
       z <- data[,8]
       N<- 100
     }
+    else if (ncol(dataset) == 10) #Test pour Breast Cancer Wisconsin
+    {
+      X <- Donn[,1:9]
+      z <- Donn[,10]
+      N <- 100
+    }
     else {
       X <- data[,1:2];
       z <- data[,3];
