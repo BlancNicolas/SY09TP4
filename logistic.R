@@ -24,12 +24,12 @@ log.app <- function(Xapp, zapp, intr, epsi)
 		iter <- iter + 1
 		bold <- beta
 
-		prob <- as.matrix(postprob(beta, Xapp))
-		MatW <- diag(apply(prob, 1, function(x) x*(1-x)))
+		prob <- postprob(beta, Xapp)
+		MatW <- diag(apply(prob, 1, function(x) x*(1-x)))*diag(nrow(prob))
+		beta <-  bold + solve((tXap%*%MatW%*%Xapp)) %*% tXap %*% (targ - prob)
 
-		beta <-  bold + ginv((tXap%*%MatW%*%Xapp)) %*% tXap %*% (targ - prob)
 
-		if (norm(beta-bold)<epsi)
+		if (norm(beta-bold)<0.00001)
 		{
 			conv <- T
 		}
@@ -61,8 +61,9 @@ log.val <- function(beta, Xtst)
 	{
 		Xtst  <- cbind(rep(1,m),Xtst)
 	}
-
-	prob <- postprob(beta,Xtst)
+  print(postprob(beta,Xtst))
+	prob <- cbind(postprob(beta,Xtst), 1 - postprob(beta,Xtst))
+	print(prob)
 	pred <- max.col(prob)
 
 	out <- NULL
@@ -75,7 +76,7 @@ log.val <- function(beta, Xtst)
 postprob <- function(beta, X)
 {
 	X <- as.matrix(X)
-
 	prob <- apply(X, 1, function(x) exp(t(beta)%*%x)/(1 + exp(t(beta)%*%x)))
 	as.matrix(prob)
-}
+	}
+
