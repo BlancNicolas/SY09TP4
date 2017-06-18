@@ -1,24 +1,51 @@
 #-------Synth Data-------
 #------------------------
 
+#---> /!\AT FIRST : USE load-data.R /!\ <-----
+
 #Test on simulated data
 
 #Quadratic Discriminant Analysis 
 #--------------------------
 
-#Synth1
-synth1ErrorDiscQuad <- ErrorDisc(adq.app, ad.val, donn1)
+#---------Synth1-----------
+#Decision borders
 
-#Synth2
-synth2ErrorDiscQuad <- ErrorDisc(adq.app, ad.val, donn2)
+#Estimate parameters and visualize data with borders
+paramSynth1 <- adq.app(Xapp1,zapp1) 
+prob.ad(paramSynth1, X1, z1, 0.5)
 
-#Synth3
-synth3ErrorDiscQuad <- ErrorDisc(adq.app, ad.val, donn3)
+#Error estimate 
+synth1ErrorDiscQuad <- ErrorDisc(adq.app, ad.val, donnSynth1)
+
+#---------Synth2-----------
+#Estimate parameters and visualize data with borders
+paramSynth2 <- adq.app(Xapp2,zapp2) 
+prob.ad(paramSynth2, X2, z2, 0.5)
+
+#Error estimate
+synth2ErrorDiscQuad <- ErrorDisc(adq.app, ad.val, donnSynth2)
+
+#---------Synth3-----------
+#Estimate parameters and visualize data with borders
+paramSynth3 <- adq.app(Xapp3,zapp3) 
+prob.ad(paramSynth3, X3, z3, 0.5)
+
+#Error estimate
+synth3ErrorDiscQuad <- ErrorDisc(adq.app, ad.val, donnSynth3)
 
 #Linear Discriminant Analysis 
 #--------------------------
 
-#Synth1
+#---------Synth1-----------
+#Decision borders
+
+#Estimate parameters and visualize data with borders
+paramSynth1Adl <- adl.app(X1,z1) 
+ad.val(paramSynth1Adl, )
+prob.ad(paramSynth1Adl, X1, z1, 0.5)
+
+#Error estimate 
 synth1ErrorDiscLin <- ErrorDisc(adl.app, ad.val, donn1)
 
 #Synth2
