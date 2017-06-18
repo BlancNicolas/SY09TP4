@@ -1,20 +1,33 @@
 #AT FIRST USE : load-data.R
-synthErrorLinReg <- function(appfunct, valfunct, dataset){
+ErrorLinReg <- function(appfunct, valfunct, dataset){
 #/!\-----Linear logistic regression------/!\
 #-------------------------------------
-#list of our datasets we want to estimate
-donn_list = list(dataset);
-
-#error matrix
-error_train <- matrix(0, length(donn_list), 20);
-error_test <-  matrix(0, length(donn_list), 20);
-
-#start of algorithm 
-for (i in 1:length(donn_list)) {
-  data <- as.data.frame(donn_list[i])
-  X <- data[,1:2];
-  z <- data[,3];
-  for (j in 1:20 ){
+  #start of algorithm 
+  data <- as.data.frame(dataset)
+  if (ncol(dataset) == 8) #test pour savoir si c'est Pima
+  {
+    print('coucou')
+    X <- data[,1:7]
+    z <- data[,8]
+    N<- 100
+  }
+  else if (ncol(dataset) == 10) #Test pour Breast Cancer Wisconsin
+  {
+    X <- Donn[,1:9]
+    z <- Donn[,10]
+    N <- 100
+  }
+  else {
+    X <- data[,1:2];
+    z <- data[,3];
+    N<-20
+  }
+  
+  #error matrix
+  error_train <- matrix(0, length(donn_list), N);
+  error_test <-  matrix(0, length(donn_list), N);
+  
+  for (j in 1:N){
     
     donn.sep <- separ1(X, z) #using separ1.R function 
     
@@ -37,8 +50,6 @@ for (i in 1:length(donn_list)) {
     error_test[i,j] <- dim(as.matrix(which(test_set != as.matrix(ztst))))[1] / dim(as.matrix(zapp))[1]; 
     
   }
-  
-}
 
 #applying mean on rows which represent each dataset
 

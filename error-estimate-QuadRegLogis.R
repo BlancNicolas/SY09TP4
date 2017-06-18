@@ -1,21 +1,28 @@
 #AT FIRST USE : load-data.R
-synthErrorDisc <- function(appfunct, valfunct, dataset){
+ErrorQuadReg <- function(appfunct, valfunct, dataset){
   #/!\-----Linear logistic regression------/!\
   #-------------------------------------
-  #list of our datasets we want to estimate
-  donn_list = list(dataset);
-  
-  #error matrix
-  error_train <- matrix(0, length(donn_list), 20);
-  error_test <-  matrix(0, length(donn_list), 20);
-  
   #start of algorithm 
-    data <- as.data.frame(dataset)
+  data <- as.data.frame(dataset)
+  if (ncol(dataset) == 8) #test pour savoir si c'est Pima
+  {
+    print('coucou')
+    X <- data[,1:7]
+    z <- data[,8]
+    N<- 100
+  }
+  else {
     X <- data[,1:2];
     z <- data[,3];
-    for (j in 1:20 ){
-      
-      donn.sep <- separ1(X, z) #using separ1.R function 
+    N<-20
+  }
+  
+  #error matrix
+  error_train <- matrix(0, length(donn_list), N);
+  error_test <-  matrix(0, length(donn_list), N);
+    for (j in 1:N ){
+      Xquad <- cbind(X, X[,1]*X[,2], (X[,1])^2, (X[,2])^2)
+      donn.sep <- separ1(Xquad, z) #using separ1.R function 
       
       #parting in learning and test sets 
       Xapp <- donn.sep$Xapp
@@ -24,11 +31,11 @@ synthErrorDisc <- function(appfunct, valfunct, dataset){
       ztst <- donn.sep$ztst
       
       #we estimate parameters on Xapp
-      param <- appfunct(Xapp, zapp);
+      param <- appfunct(Xapp, zapp, 1, 0.00001);
       
       #applying values on individuals of sets 
-      train_set <- valfunct(param, Xapp)$pred;
-      test_set <- valfunct(param, Xtst)$pred;
+      train_set <- valfunct(param$beta, Xapp)$pred;
+      test_set <- valfunct(param$beta, Xtst)$pred;
       
       #error rate 
       
