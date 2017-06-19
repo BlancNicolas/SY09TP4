@@ -15,11 +15,10 @@ prob.log2 <- function(param, X, z, niveaux)
     naffY <- length(grilleY)
     grille <- cbind(rep.int(grilleX,times=rep(naffY,naffX)),rep(grilleY,naffX))
   	grille <- cbind(grille, grille[,1]*grille[,2], grille[,1]^2, grille[,2]^2)
-
     grille <- as.matrix(grille)
 
     # calcul des valeurs de la fonction 
     valf <- log.val(param, grille)$prob[,1]
-    plot(X[,1:2], col=c("red","green","blue","magenta","orange")[z])
+    plot(X, col=c("red","green","blue","magenta","orange")[z])
     contour(grilleX, grilleY, matrix(valf,nrow=naffX,byrow=T), add=T, drawlabels=FALSE, levels=niveaux)
 }

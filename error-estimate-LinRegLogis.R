@@ -1,5 +1,5 @@
 #AT FIRST USE : load-data.R
-ErrorLinReg <- function(appfunct, valfunct, dataset){
+ErrorLinReg <- function(appfunct, valfunct, dataset, origin){
 #/!\-----Linear logistic regression------/!\
 #-------------------------------------
   #start of algorithm 
@@ -38,7 +38,7 @@ ErrorLinReg <- function(appfunct, valfunct, dataset){
     ztst <- donn.sep$ztst
     
     #we estimate parameters on Xapp
-    param <- appfunct(Xapp, zapp, 1, 0.00001);
+    param <- appfunct(Xapp, zapp, origin, 0.00001);
     
     #applying values on individuals of sets 
     train_set <- valfunct(param$beta, Xapp)$pred;
