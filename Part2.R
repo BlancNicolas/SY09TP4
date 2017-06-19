@@ -202,7 +202,7 @@ PimaErrorLinRegF <- ErrorLinReg(log.app, log.val, donnPima,0)
 
 #Quadratic Discriminant Analysis 
 #-------------------------------
-
+c
 BreastErrorDiscQuad <- ErrorDisc(adq.app, ad.val, donnBreast)
 
 #Linear Discriminant Analysis 
