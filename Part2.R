@@ -79,14 +79,14 @@ synth1ErrorNba <- ErrorDisc(nba.app, ad.val, donnSynth1)
 paramSynth2Nba <- nba.app(Xapp2,zapp2) 
 prob.ad(paramSynth2Nba, X2, z2, 0.5)
 
-synth2ErrorNba <- ErrorDisc(adl.app, ad.val, donnSynth2)
+synth2ErrorNba <- ErrorDisc(nba.app, ad.val, donnSynth2)
 
 #---------Synth3-----------
 #Estimate parameters and visualize data with borders
 paramSynth3Nba <- nba.app(Xapp3,zapp3) 
 prob.ad(paramSynth3Nba, X3, z3, 0.5)
 
-synth3ErrorDiscLin <- ErrorDisc(adl.app, ad.val, donnSynth3)
+synth3ErrorNba <- ErrorDisc(nba.app, ad.val, donnSynth3)
 
 #Linear Logistic regression
 #--------------------------
