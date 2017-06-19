@@ -48,3 +48,30 @@ Xapp3 <- donn.sep$Xapp
 zapp3 <- donn.sep$zapp
 Xtst3 <- donn.sep$Xtst
 ztst3 <- donn.sep$ztst
+
+#---------Pima----------------
+
+donnPima <- read.csv("Pima.csv", header=T)
+XPim <- donnPima[,1:7]
+zPim <- donnPima[,8]
+
+donn.sep <- separ1(XPim, zPim) #using separ1.R function 
+
+XappPim <- donn.sep$Xapp
+zappPim <- donn.sep$zapp
+XtstPim <- donn.sep$Xtst
+ztstPim <- donn.sep$ztst
+
+#----------Breast Cancer-------
+
+donnBreast <- read.csv("bcw.csv", header=T)
+XBreast <- donnBreast[,1:9]
+zBreast <- donnBreast[,10]
+
+donn.sep <- separ1(XBreast, zBreast) #using separ1.R function 
+
+XappBreast <- donn.sep$Xapp
+zappBreast <- donn.sep$zapp
+XtstBreast <- donn.sep$Xtst
+ztstBreast <- donn.sep$ztst
+

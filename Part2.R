@@ -45,16 +45,21 @@ paramSynth1Adl <- adl.app(Xapp1,zapp1)
 prob.ad(paramSynth1Adl, X1, z1, 0.5)
 
 #Error estimate 
-synth1ErrorDiscLin <- ErrorDisc(adl.app, ad.val, donn1)
+synth1ErrorDiscLin <- ErrorDisc(adl.app, ad.val, donnSynth1)
 
 #---------Synth2-----------
 paramSynth2Adl <- adl.app(Xapp2,zapp2) 
 prob.ad(paramSynth2Adl, X2, z2, 0.5)
 
-synth2ErrorDiscLin <- ErrorDisc(adl.app, ad.val, donn2)
+synth2ErrorDiscLin <- ErrorDisc(adl.app, ad.val, donnSynth2)
 
-#Synth3
-synth3ErrorDiscLin <- ErrorDisc(adl.app, ad.val, donn3)
+
+#---------Synth3----------
+
+paramSynth3Adl <- adl.app(Xapp3,zapp3) 
+prob.ad(paramSynth3Adl, X3, z3, 0.5)
+
+synth3ErrorDiscLin <- ErrorDisc(adl.app, ad.val, donnSynth3)
 
 #Naive Bayesian Analysis 
 #--------------------------
@@ -74,10 +79,14 @@ synth1ErrorNba <- ErrorDisc(nba.app, ad.val, donnSynth1)
 paramSynth2Nba <- nba.app(Xapp2,zapp2) 
 prob.ad(paramSynth2Nba, X2, z2, 0.5)
 
-synth2ErrorDiscLin <- ErrorDisc(adl.app, ad.val, donn2)
+synth2ErrorNba <- ErrorDisc(adl.app, ad.val, donnSynth2)
 
-#Synth3
-synth3ErrorDiscLin <- ErrorDisc(adl.app, ad.val, donn3)
+#---------Synth3-----------
+#Estimate parameters and visualize data with borders
+paramSynth3Nba <- nba.app(Xapp3,zapp3) 
+prob.ad(paramSynth3Nba, X3, z3, 0.5)
+
+synth3ErrorDiscLin <- ErrorDisc(adl.app, ad.val, donnSynth3)
 
 #Linear Logistic regression
 #--------------------------
@@ -94,10 +103,15 @@ synth1ErrorLinRegF <- ErrorLinReg(log.app, log.val, donnSynth1, 0)#Without origi
 paramSynth2LinReg <- log.app(Xapp2, zapp2, 1, 0.00001)
 prob.log(paramSynth2LinReg$beta, X2, z2, 0.5)
 
-synth2ErrorLinReg <- ErrorLinReg(log.app, log.val, donn2)
+synth2ErrorLinRegT <- ErrorLinReg(log.app, log.val, donnSynth2, 1)#With origin
+synth2ErrorLinRegF <- ErrorLinReg(log.app, log.val, donnSynth2, 0)#Without origin
 
-#Synth3
-synth3ErrorLinReg <- ErrorLinReg(log.app, log.val, donn3)
+#---------Synth3-----------
+paramSynth3LinReg <- log.app(Xapp3, zapp3, 1, 0.00001)
+prob.log(paramSynth3LinReg$beta, X3, z3, 0.5)
+
+synth3ErrorLinRegT <- ErrorLinReg(log.app, log.val, donnSynth3, 1)#With origin
+synth3ErrorLinRegF <- ErrorLinReg(log.app, log.val, donnSynth3, 0)#Without origin
 
 #Quadratic Logistic regression
 #--------------------------
@@ -115,14 +129,20 @@ synth1ErrorQuadRegF <- ErrorQuadReg(log.app, log.val, donnSynth1, 0)#without ori
 #---------Synth2-----------
 Xquad2 <- cbind(X2, X2[,1]*X2[,2], (X2[,1])^2, (X2[,2])^2)
 paramSynth2QuadReg <- log.app(Xquad2, z2, 1, 0.00001)#with origin  
-paramSynth1QuadReg <- log.app(Xquad2, z2, 0, 0.00001)#without origin
+paramSynth2QuadReg <- log.app(Xquad2, z2, 0, 0.00001)#without origin
 prob.log2(paramSynth2QuadReg$beta, Xquad2[,1:2], z2, 0.5)
 
-synth2ErrorQuadReg <- ErrorQuadReg(log.app, log.val, donn2)
+synth2ErrorQuadRegT <- ErrorQuadReg(log.app, log.val, donnSynth2, 1)#with origin  
+synth2ErrorQuadRegF <- ErrorQuadReg(log.app, log.val, donnSynth2, 0)#without origin
 
-#Synth3
-synth3ErrorQuadReg <- ErrorQuadReg(log.app, log.val, donn3)
+#---------Synth3-----------
+Xquad3 <- cbind(X3, X3[,1]*X3[,2], (X3[,1])^2, (X3[,2])^2)
+paramSynth3QuadReg <- log.app(Xquad3, z3, 1, 0.00001)#with origin  
+paramSynth3QuadReg <- log.app(Xquad3, z3, 0, 0.00001)#without origin
+prob.log2(paramSynth3QuadReg$beta, Xquad3[,1:2], z3, 0.5)
 
+synth3ErrorQuadRegT <- ErrorQuadReg(log.app, log.val, donnSynth3, 1)#with origin  
+synth3ErrorQuadRegF <- ErrorQuadReg(log.app, log.val, donnSynth3, 0)#without origin
 #Decision Tree
 #---------------------------
 
@@ -130,32 +150,55 @@ synth3ErrorQuadReg <- ErrorQuadReg(log.app, log.val, donn3)
 #------- Pima --------------
 #---------------------------
 
-donnPima <- read.csv("Pima.csv", header=T)
+#----ACP---
+#----------
+
+#fonction princomp Pima
+
+Xpascentrée <- data.matrix(XPim)
+X = scale(Xpascentrée, center=TRUE, scale=FALSE)
+ACP <- princomp(X)
+plot(ACP)
+biplot(ACP, xlabs=rep(".", nrow(X)))
+biplot(ACP, c(1,3)) # Avec le filtre c(1,2) on choisit le premier plan factoriel, ici c'est le deuxième par exemple
+
+XPimAfterACP <- donnPima[,2:3]
+paramPima <- adl.app(XPimAfterACP,zappPim) #pas concluant
+prob.ad(paramPima, XPimAfterACP, zPim, 0.5)
+
 
 #Quadratic Discriminant Analysis 
 #--------------------------
+#Estimate parameters and visualize data with borders
+paramPima <- adq.app(XPimAfterACP,zappPim) 
+prob.ad(paramPima, XPimAfterACP, zPim, 0.5)
+
 
 PimaErrorDiscQuad <- ErrorDisc(adq.app, ad.val, donnPima)
 
 #Linear Discriminant Analysis 
 #--------------------------
 
-PimaErrorDiscQuad <- ErrorDisc(adl.app, ad.val, donnPima)
+PimaErrorDiscLin <- ErrorDisc(adl.app, ad.val, donnPima)
+
+#Bayesian
+#--------
+PimaErrorNba <- ErrorDisc(nba.app, ad.val, donnPima)
 
 #Quadratic Logistic Regression Analysis 
-#--------------------------
+#--------------------------------------
 
-PimaErrorQuadReg <- synthErrorQuadReg(log.app,log.val, donnPima)
+PimaErrorQuadRegT <- ErrorQuadReg(log.app,log.val, donnPima, 1)
+PimaErrorQuadRegF <- ErrorQuadReg(log.app,log.val, donnPima, 0)
 
 #Linear Logistic Regression Analysis 
 #--------------------------
 
-PimaErrorLinReg <- ErrorLinReg(log.app, log.val, donnPima)
+PimaErrorLinRegT <- ErrorLinReg(log.app, log.val, donnPima,1)
+PimaErrorLinRegF <- ErrorLinReg(log.app, log.val, donnPima,0)
 
 #------- Breast cancer Wisconsin --------------
 #----------------------------------------------
-
-donnBreast <- read.csv("bcw.csv", header=T)
 
 #Quadratic Discriminant Analysis 
 #-------------------------------
@@ -165,17 +208,18 @@ BreastErrorDiscQuad <- ErrorDisc(adq.app, ad.val, donnBreast)
 #Linear Discriminant Analysis 
 #--------------------------
 
-BreastErrorDiscQuad <- ErrorDisc(adl.app, ad.val, donnBreast)
+BreastErrorDiscLin <- ErrorDisc(adl.app, ad.val, donnBreast)
 
-#Quadratic Logistic Regression Analysis 
-#--------------------------
+#Bayesian
+#--------
 
-BreastErrorQuadReg <- ErrorQuadReg(log.app,log.val, donnBreast)
+BreastErrorNba <- ErrorDisc(nba.app, ad.val, donnBreast)
 
 #Linear Logistic Regression Analysis 
 #--------------------------
 
-BreastErrorLinReg <- ErrorLinReg(log.app, log.val, donnBreast)
+BreastErrorLinRegT <- ErrorLinReg(log.app, log.val, donnBreast, 1)
+BreastErrorLinRegF <- ErrorLinReg(log.app, log.val, donnBreast, 0)
 
 
 

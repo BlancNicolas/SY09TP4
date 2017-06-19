@@ -6,7 +6,6 @@ ErrorQuadReg <- function(appfunct, valfunct, dataset, origin){
   data <- as.data.frame(dataset)
   if (ncol(dataset) == 8) #test pour savoir si c'est Pima
   {
-    print('coucou')
     X <- data[,1:7]
     z <- data[,8]
     N<- 100
@@ -27,18 +26,48 @@ ErrorQuadReg <- function(appfunct, valfunct, dataset, origin){
   error_train <- matrix(0, length(donn_list), N);
   error_test <-  matrix(0, length(donn_list), N);
     for (j in 1:N ){
-      Xquad <- cbind(X, X[,1]*X[,2], (X[,1])^2, (X[,2])^2)
-      donn.sep <- separ1(Xquad, z) #using separ1.R function 
-      
-      #parting in learning and test sets 
-      Xapp <- donn.sep$Xapp
-      zapp <- donn.sep$zapp
-      Xtst <- donn.sep$Xtst
-      ztst <- donn.sep$ztst
+      if (ncol(dataset) == 8){#pour Pima
+        
+        #on part d'abord de d'ensembles de test et apprentissage classiques 
+        
+        donn.sep <- separ1(X, z) #using separ1.R function 
+        Xapp <- donn.sep$Xapp
+        zapp <- donn.sep$zapp
+        Xtst <- donn.sep$Xtst
+        ztst <- donn.sep$ztst
+        Xapp2 <- Xapp
+        Xtst2 <- Xtst
+        for (p in 1:(dim(Xapp)[2]-1))
+        {
+          for (q in (p+1):dim(Xapp)[2])
+          {
+            Xapp2 <- cbind(Xapp2, Xapp[,p]*Xapp[,q])
+            Xtst2 <- cbind(Xtst2, Xtst[,p]*Xtst[,q])
+          }
+        }
+        
+        for (p in 1:dim(Xapp)[2])
+        {
+          Xapp2 <- cbind(Xapp2, Xapp[,p]^2)
+          Xtst2 <- cbind(Xtst2, Xtst[,p]^2)
+        }
+        Xapp <- Xapp2 #pour les utiliser dans les fonctions définies en desous
+        Xtst <- Xtst2
+      }
+      else {
+        Xquad <- cbind(X, X[,1]*X[,2], (X[,1])^2, (X[,2])^2)
+        donn.sep <- separ1(Xquad, z) #using separ1.R function 
+        
+        #parting in learning and test sets 
+        Xapp <- donn.sep$Xapp
+        zapp <- donn.sep$zapp
+        Xtst <- donn.sep$Xtst
+        ztst <- donn.sep$ztst
+      }
+     
       
       #we estimate parameters on Xapp
       param <- appfunct(Xapp, zapp, origin, 0.00001);
-      
       #applying values on individuals of sets 
       train_set <- valfunct(param$beta, Xapp)$pred;
       test_set <- valfunct(param$beta, Xtst)$pred;
